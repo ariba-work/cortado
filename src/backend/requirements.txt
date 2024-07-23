@@ -9,7 +9,7 @@ git+https://github.com/ariba-work/pm4py-core.git@unfolding#egg=pm4py
 appdirs
 websockets
 #git+https://gitlab.fit.fraunhofer.de/cortado/cortado-core.git@master#egg=cortado_core
-git+https://gitlab.fit.fraunhofer.de/cortado/cortado-core.git@unfolding-based-alignments#egg=cortado_core
+git+https://github.com/ariba-work/cortado-core.git@main#egg=cortado_core
 #git+https://github.com/cortado-tool/cortado-core@main#egg=cortado_core
 cvxopt
 pyinstaller~=6.6.0
