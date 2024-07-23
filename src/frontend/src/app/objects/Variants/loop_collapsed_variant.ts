@@ -2,6 +2,7 @@ import { ProcessTree } from '../ProcessTree/ProcessTree';
 import { Variant } from './variant';
 import { VariantElement } from './variant_element';
 import { IVariant } from './variant_interface';
+import { Dependency } from './dependency';
 
 export class LoopCollapsedVariant implements IVariant {
   id: string;
@@ -13,6 +14,7 @@ export class LoopCollapsedVariant implements IVariant {
   fragmentStatistics: any;
   collapsedVariantId: string;
   clusterId: number;
+  dependencyDeviations: Dependency[];
 
   constructor(
     id: string,

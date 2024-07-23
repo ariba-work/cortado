@@ -100,6 +100,7 @@ import { MaxValues } from './arc-diagram/filter/filter.component';
 import { ArcsViewMode } from './arc-diagram/arcs-view-mode';
 import { ArcDiagramService } from '../../services/arcDiagramService/arc-diagram.service';
 import { ArcDiagramComputationResult } from '../../services/arcDiagramService/model';
+import { Dependency } from '../../objects/Variants/dependency';
 
 @Component({
   selector: 'app-variant-explorer',
@@ -455,7 +456,7 @@ export class VariantExplorerComponent
   private redraw_components() {
     if (this.variantVisualisations) {
       for (let component of this.variantVisualisations) {
-        component.variantDrawer.redraw();
+        component.alignmentDrawer?.redraw();
         this.renderer.setStyle(
           component.arcDiagram.svgHtmlElement.nativeElement,
           'display',
@@ -488,12 +489,19 @@ export class VariantExplorerComponent
 
           if (!res.isTimeout) {
             variant.alignment = deserialize(res.alignment);
+            variant.variant = deserialize(res.variant);
             variant.alignment.setExpanded(variant.variant.getExpanded());
             variant.deviations = res.deviations;
             variant.usedTreeForConformanceChecking = res.processTree;
+            variant.dependencyDeviations = res.deviationDependencies;
+            this.conformanceCheckingService.selectedVariantForInsights =
+              variant;
           }
 
-          this.updateAlignmentStatistics();
+          this.updateAlignmentStatistics(res.deviationDependencies);
+          this.variantVisualisations
+            .find((vv) => vv.id == res.id)
+            ?.alignmentDrawer?.redraw();
           this.variantVisualisations
             .find((vv) => vv.id == res.id)
             ?.variantDrawer?.redraw();
@@ -516,7 +524,7 @@ export class VariantExplorerComponent
   }
 
   // @ Refactor into Alignment Service
-  updateAlignmentStatistics(): void {
+  updateAlignmentStatistics(deviationDependencies?: Dependency[]): void {
     let numberFittingVariants = 0;
     let numberFittingTraces = 0;
 
@@ -531,6 +539,11 @@ export class VariantExplorerComponent
       numberFittingTraces,
       numberFittingVariants
     );
+    // if (deviationDependencies) {
+    //   this.conformanceCheckingService.updateDeviationDependenciesStatistics(
+    //     deviationDependencies
+    //   );
+    // }
   }
 
   updateConformanceForVariant(variant: IVariant, timeout: number): void {
@@ -551,7 +564,8 @@ export class VariantExplorerComponent
         this.processTreeService.currentDisplayedProcessTree,
         v.variant.serialize(1),
         timeout,
-        AlignmentType.VariantAlignment
+        AlignmentType.VariantAlignment,
+        v.bid
       );
 
       if (resubscribe) {

@@ -4,9 +4,12 @@ uvicorn
 cycler~=0.11.0
 networkx==3.0rc1
 python-multipart
-pm4py==2.4.1
+#pm4py==2.4.1
+git+https://github.com/ariba-work/pm4py-core.git@unfolding#egg=pm4py
 appdirs
 websockets
-git+https://github.com/cortado-tool/cortado-core@main#egg=cortado_core
+#git+https://gitlab.fit.fraunhofer.de/cortado/cortado-core.git@master#egg=cortado_core
+git+https://gitlab.fit.fraunhofer.de/cortado/cortado-core.git@unfolding-based-alignments#egg=cortado_core
+#git+https://github.com/cortado-tool/cortado-core@main#egg=cortado_core
 cvxopt
 pyinstaller~=6.6.0

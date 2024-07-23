@@ -28,6 +28,7 @@ export class ConformanceTabComponent
   implements AfterViewInit, OnDestroy
 {
   @ViewChild('colorMapTab') colorMapTab: ElementRef;
+  @ViewChild('violationsTab') violationsTab: ElementRef;
 
   private _destroy$ = new Subject();
   public conformanceColorMapValues: ColorMapValue[];
@@ -75,7 +76,7 @@ export class ConformanceTabComponent
       .pipe(takeUntil(this._destroy$))
       .subscribe((viewMode) => {
         if (viewMode === ViewMode.CONFORMANCE)
-          this.colorMapTab.nativeElement.click();
+          this.violationsTab.nativeElement.click();
       });
   }
 

@@ -5,6 +5,7 @@ import {
   setParent,
   updateSelectionAttributesForGroup,
 } from './infix_selection';
+import { ProcessTreeOperator } from '../ProcessTree/ProcessTree';
 
 export class PerformanceStats {
   public min: number;
@@ -1235,7 +1236,9 @@ export class LeafNode extends VariantElement {
     public activity: string[],
     performance: any = undefined,
     public conformance: number[] = undefined,
-    public id: number = undefined
+    public id: number = undefined,
+    public alignmentEid: number = undefined,
+    public isSyncAlignmentLeaf: boolean = undefined
   ) {
     super(performance);
   }
@@ -1569,7 +1572,9 @@ export function deserialize(obj: any): VariantElement {
       obj.leaf.map((el) => {
         return typeof el === 'string' ? undefined : el[1];
       }),
-      obj.id
+      obj.id,
+      obj.alignment_eid,
+      obj.is_sync_alignment_leaf
     );
   } else if ('loop' in obj) {
     return new LoopGroup(

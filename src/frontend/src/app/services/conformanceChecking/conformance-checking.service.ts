@@ -24,6 +24,8 @@ import { BackendService } from '../backendService/backend.service';
 import { processTreesEqual } from 'src/app/objects/ProcessTree/utility-functions/process-tree-integrity-check';
 import { ModelViewModeService } from '../viewModeServices/model-view-mode.service';
 import { ViewMode } from 'src/app/objects/ViewMode';
+import { Dependency } from '../../objects/Variants/dependency';
+import { DependencyDeviationCounter } from '../../objects/Variants/dependency-deviation-counter';
 
 @Injectable({
   providedIn: 'root',
@@ -150,7 +152,9 @@ export class ConformanceCheckingService {
             result['cost'],
             result['deviations'],
             result['alignment'],
-            result['pt']
+            result['pt'],
+            result['variant'],
+            result['deviation_deps']
           );
         })
       );
@@ -171,7 +175,8 @@ export class ConformanceCheckingService {
     pt: ProcessTree,
     variant: any,
     timeout: number,
-    alignType: AlignmentType
+    alignType: AlignmentType,
+    bid?: number | string
   ): boolean {
     const resubscribe = this.connect();
     const rid = this.infoService.setRequest('conformance checking', () =>
@@ -180,11 +185,13 @@ export class ConformanceCheckingService {
     this.runningRequests.push(rid);
     this.socket.next({
       id: id,
+      bid: bid,
       infixType: infixType,
       alignType: alignType,
       pt: pt.copy(false),
       variant: variant,
       timeout: timeout,
+      method: 'unfolding',
     });
 
     return resubscribe;
@@ -298,6 +305,44 @@ export class ConformanceCheckingService {
         this.updateTreeConformance(Array.from(variantsCombined));
       }
     }
+  }
+
+  private _depsDeviationCounter: BehaviorSubject<DependencyDeviationCounter> =
+    new BehaviorSubject(new DependencyDeviationCounter());
+
+  public get depsDeviationCounter$(): Observable<DependencyDeviationCounter> {
+    return this._depsDeviationCounter.asObservable();
+  }
+
+  public get depsDeviationCounter(): DependencyDeviationCounter {
+    return this._depsDeviationCounter.getValue();
+  }
+
+  public set depsDeviationCounter(counter: DependencyDeviationCounter) {
+    this._depsDeviationCounter.next(counter);
+  }
+
+  public updateDeviationDependenciesStatistics(
+    deviationDependencies: Dependency[]
+  ) {
+    deviationDependencies.forEach((dep: Dependency) =>
+      this.depsDeviationCounter.increment(dep)
+    );
+  }
+
+  private _selectedVariantForInsights: BehaviorSubject<Variant> =
+    new BehaviorSubject(null);
+
+  public get selectedVariantForInsights$(): Observable<Variant> {
+    return this._selectedVariantForInsights.asObservable();
+  }
+
+  public get selectedVariantForInsights(): Variant {
+    return this._selectedVariantForInsights.getValue();
+  }
+
+  public set selectedVariantForInsights(v: Variant) {
+    this._selectedVariantForInsights.next(v);
   }
 }
 

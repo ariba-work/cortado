@@ -107,6 +107,8 @@ import { ArcDiagramFilterComponent } from './components/variant-explorer/arc-dia
 import { VariantVisualisationComponent } from './components/variant-explorer/variant/subcomponents/variant-visualisation/variant-visualisation.component';
 import { LogExporterDialogComponent } from './components/log-exporter-dialog/log-exporter-dialog/log-exporter-dialog.component';
 import { EnumToArrayPipe } from './pipes/enum-to-array.pipe';
+import {AlignmentDrawerDirective} from "./directives/alignment-drawer/alignment-drawer.directive";
+import { ViolationsComponent } from './components/conformance-tab/sub-tabs/violations/violations.component';
 
 @NgModule({
   declarations: [
@@ -195,6 +197,8 @@ import { EnumToArrayPipe } from './pipes/enum-to-array.pipe';
     VariantVisualisationComponent,
     LogExporterDialogComponent,
     EnumToArrayPipe,
+    AlignmentDrawerDirective,
+    ViolationsComponent,
   ],
   imports: [
     BrowserModule,

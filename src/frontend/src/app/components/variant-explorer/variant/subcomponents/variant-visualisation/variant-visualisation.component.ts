@@ -21,6 +21,8 @@ import { VariantPerformanceService } from '../../../../../services/variant-perfo
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { ConformanceCheckingService } from '../../../../../services/conformanceChecking/conformance-checking.service';
+import { ViewMode } from '../../../../../objects/ViewMode';
+import { AlignmentDrawerDirective } from '../../../../../directives/alignment-drawer/alignment-drawer.directive';
 
 @Component({
   selector: 'app-variant-visualisation',
@@ -31,6 +33,8 @@ export class VariantVisualisationComponent implements OnInit, AfterViewInit {
   public id: string;
   public bid: number;
   public arcsRenderingInProgress: boolean = false;
+  @Input()
+  public showAlignmentDrawer: boolean = false;
 
   private _destroy$ = new Subject();
 
@@ -103,6 +107,8 @@ export class VariantVisualisationComponent implements OnInit, AfterViewInit {
   arcDiagram: ArcDiagramDirective;
   @ViewChild(VariantDrawerDirective)
   variantDrawer: VariantDrawerDirective;
+  @ViewChild(AlignmentDrawerDirective)
+  alignmentDrawer: AlignmentDrawerDirective;
 
   filterArcs(arcs: Arc[], filterParams: FilterParams) {
     return arcs.filter((arc) => {
@@ -132,4 +138,5 @@ export class VariantVisualisationComponent implements OnInit, AfterViewInit {
   }
 
   protected readonly ArcsViewMode = ArcsViewMode;
+  protected readonly ViewMode = ViewMode;
 }

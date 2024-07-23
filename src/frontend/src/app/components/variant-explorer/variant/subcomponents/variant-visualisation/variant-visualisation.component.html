@@ -22,17 +22,38 @@
     <g id="arcGroup"></g>
   </svg>
 
-  <svg
-    appVariantDrawer
-    #drawer="variantDrawer"
-    [variant]="variant"
-    [onClickCbFc]="variantClickCallBack"
-    [onRightMouseClickCbFc]="openContextCallback"
-    [traceInfixSelectionMode]="traceInfixSelectionMode"
-    [computeActivityColor]="computeActivityColor"
-    [infixType]="variant.infixType"
-    (redrawArcsIfComputed)="arcsViewMode !== ArcsViewMode.HIDE_ALL && drawArcs()"
-    class="zoom-group-variant"
-    style="display: inline-block"
-  ></svg>
+
+  <div class="d-flex flex-row">
+    <div *ngIf="showAlignmentDrawer" class="d-flex justify-content-center align-items-center col-2 secondary-text">Var. {{variant.bid+1}}</div>
+    <svg
+      appVariantDrawer
+      #drawer="variantDrawer"
+      [variant]="variant"
+      [onClickCbFc]="variantClickCallBack"
+      [onRightMouseClickCbFc]="openContextCallback"
+      [traceInfixSelectionMode]="traceInfixSelectionMode"
+      [computeActivityColor]="computeActivityColor"
+      [infixType]="variant.infixType"
+      (redrawArcsIfComputed)="arcsViewMode !== ArcsViewMode.HIDE_ALL && drawArcs()"
+      class="zoom-group-variant"
+      style="display: inline-block"
+    ></svg>
+  </div>
+
+
+  <div *ngIf="this.variantViewModeService.viewMode === ViewMode.CONFORMANCE && variant.alignment && showAlignmentDrawer" class="d-flex flex-row">
+    <div class="d-flex justify-content-center align-items-center col-2 secondary-text">Model</div>
+    <svg
+      appAlignmentDrawer
+      #drawer="alignmentDrawer"
+      [variant]="variant"
+      [onClickCbFc]="variantClickCallBack"
+      [traceInfixSelectionMode]="traceInfixSelectionMode"
+      [computeActivityColor]="computeActivityColor"
+      [infixType]="variant.infixType"
+      class="zoom-group-variant"
+      style="display: inline-block"
+    ></svg>
+  </div>
+
 </div>

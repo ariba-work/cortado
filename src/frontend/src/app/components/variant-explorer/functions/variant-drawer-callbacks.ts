@@ -126,17 +126,17 @@ export function activityColor(
         }
         break;
 
-      case ViewMode.CONFORMANCE:
-        if (variant.alignment && !variant.isConformanceOutdated) {
-          const p = element.asLeafNode().conformance[0];
-          if (p === 0) color = 'url(#variantConformanceStriped)';
-          else
-            color =
-              this.conformanceCheckingService.variantConformanceColorMap.getColor(
-                p
-              );
-        } else color = '#d3d3d3';
-        break;
+      // case ViewMode.CONFORMANCE:
+      //   if (variant.alignment && !variant.isConformanceOutdated) {
+      //     const p = element.asLeafNode().conformance[0];
+      //     if (p === 0) color = 'url(#variantConformanceStriped)';
+      //     else
+      //       color =
+      //         this.conformanceCheckingService.variantConformanceColorMap.getColor(
+      //           p
+      //         );
+      //   } else color = '#d3d3d3';
+      //   break;
     }
   } else if (
     this.variantViewModeService.viewMode === ViewMode.PERFORMANCE &&

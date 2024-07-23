@@ -37,9 +37,9 @@ router = APIRouter(tags=["Variants"], prefix="/variant")
 def count_fragment_occurrences(payload: VariantFragment):
     fragment: Group = Group.deserialize(payload.fragment)
 
-    variants: Mapping[int, Tuple[ConcurrencyGroup, Trace, List, VariantInformation]] = (
-        cache.variants
-    )
+    variants: Mapping[
+        int, Tuple[ConcurrencyGroup, Trace, List, VariantInformation]
+    ] = cache.variants
     variants = {k: v for k, v in variants.items() if not v[3].is_user_defined}
 
     infixType = InfixType[payload.infixType]
@@ -123,9 +123,9 @@ def calculateStatistics(query: IdQuery):
         latest_time = max([act["time:timestamp"] for act in trace])
         statistics_temp["latest_time"] = latest_time.strftime("%Y-%m-%d %H:%M:%S")
         duration = latest_time - earliest_time
-        statistics_temp["total_duration"] = (
-            f"{duration.days} days, {duration.seconds // 3600:02}:{(duration.seconds % 3600) // 60:02}:{duration.seconds % 60:02}"
-        )
+        statistics_temp[
+            "total_duration"
+        ] = f"{duration.days} days, {duration.seconds // 3600:02}:{(duration.seconds % 3600) // 60:02}:{duration.seconds % 60:02}"
         trace_statistics.append(statistics_temp)
 
     res = {
@@ -155,9 +155,9 @@ def getCaseActivities(query: caseQuery):
                     "%Y-%m-%d %H:%M:%S"
                 )
                 duration = act["time:timestamp"] - act["start_timestamp"]
-                activities_temp["duration"] = (
-                    f"{duration.days} days, {duration.seconds // 3600:02}:{(duration.seconds % 3600) // 60:02}:{duration.seconds % 60:02}"
-                )
+                activities_temp[
+                    "duration"
+                ] = f"{duration.days} days, {duration.seconds // 3600:02}:{(duration.seconds % 3600) // 60:02}:{duration.seconds % 60:02}"
                 activities_temp["property"] = act
                 case_activities.append(activities_temp)
             break

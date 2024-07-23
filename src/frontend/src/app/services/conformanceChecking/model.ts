@@ -1,4 +1,5 @@
 import { ProcessTree } from 'src/app/objects/ProcessTree/ProcessTree';
+import { Dependency } from '../../objects/Variants/dependency';
 
 export class ConformanceCheckingResult {
   constructor(
@@ -8,8 +9,12 @@ export class ConformanceCheckingResult {
     public cost: number,
     public deviations: number,
     public alignment: string,
-    public processTree: ProcessTree
-  ) {}
+    public processTree: ProcessTree,
+    public variant: string,
+    public deviationDependencies: Dependency[]
+  ) {
+    this.deviationDependencies = deviationDependencies.map(Dependency.fromJSON);
+  }
 }
 export interface treeConformanceResult {
   merged_conformance_tree: ProcessTree;

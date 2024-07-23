@@ -40,12 +40,13 @@ import { takeUntil } from 'rxjs/operators';
 import { IVariant } from 'src/app/objects/Variants/variant_interface';
 import { ConformanceCheckingService } from 'src/app/services/conformanceChecking/conformance-checking.service';
 import { VariantService } from '../../services/variantService/variant.service';
+import { VariantVisualisationComponent } from '../../components/variant-explorer/variant/subcomponents/variant-visualisation/variant-visualisation.component';
 
 @Directive({
-  selector: '[appVariantDrawer]',
-  exportAs: 'variantDrawer',
+  selector: '[appAlignmentDrawer]',
+  exportAs: 'alignmentDrawer',
 })
-export class VariantDrawerDirective
+export class AlignmentDrawerDirective
   implements AfterViewInit, OnChanges, OnDestroy
 {
   setExpanded(expanded: boolean) {
@@ -60,7 +61,8 @@ export class VariantDrawerDirective
     private sharedDataService: SharedDataService, //edited
     private variantViewModeService: VariantViewModeService,
     private conformanceCheckingService: ConformanceCheckingService,
-    private variantService: VariantService
+    private variantService: VariantService,
+    private variantVisualisationComponent: VariantVisualisationComponent
   ) {
     this.svgHtmlElement = elRef;
   }
@@ -78,21 +80,21 @@ export class VariantDrawerDirective
 
   @Input()
   computeActivityColor: (
-    drawerDirective: VariantDrawerDirective,
+    drawerDirective: AlignmentDrawerDirective,
     element: VariantElement,
     variant: IVariant
   ) => string;
 
   @Input()
   onClickCbFc: (
-    drawerDirective: VariantDrawerDirective,
+    drawerDirective: AlignmentDrawerDirective,
     element: VariantElement,
     variant: IVariant
   ) => void;
 
   @Input()
   onMouseOverCbFc: (
-    drawerDirective: VariantDrawerDirective,
+    drawerDirective: AlignmentDrawerDirective,
     element: VariantElement,
     variant: IVariant,
     selection
@@ -100,7 +102,7 @@ export class VariantDrawerDirective
 
   @Input()
   onRightMouseClickCbFc: (
-    drawerDirective: VariantDrawerDirective,
+    drawerDirective: AlignmentDrawerDirective,
     element: VariantElement,
     variant: IVariant,
     event: Event
@@ -167,59 +169,28 @@ export class VariantDrawerDirective
 
   redraw(): void {
     this.svgSelection.selectAll('*').remove();
-    if (this.variant.variant) {
-      const height = this.variant.variant.recalculateHeight(
-        !this.keepStandardView &&
-          this.variantViewModeService.viewMode === ViewMode.PERFORMANCE
-      );
-      const width = this.variant.variant.recalculateWidth(
-        !this.keepStandardView &&
-          this.variantViewModeService.viewMode === ViewMode.PERFORMANCE
-      );
+    const height = this.variant.alignment.recalculateHeight(false);
+    const width = this.variant.alignment.recalculateWidth(false);
 
-      if (
-        !this.keepStandardView &&
-        this.variantViewModeService.viewMode === ViewMode.CONFORMANCE &&
-        this.variant.alignment
-      ) {
-        const height = this.variant.alignment.recalculateHeight(false);
-        const width = this.variant.alignment.recalculateWidth(false);
-      }
+    const svg_container = d3.select(this.svgHtmlElement.nativeElement);
+    this.variant.alignment.updateWidth(
+      !this.keepStandardView &&
+        this.variantViewModeService.viewMode === ViewMode.PERFORMANCE
+    );
 
-      const svg_container = d3.select(this.svgHtmlElement.nativeElement);
-      this.variant.variant.updateWidth(
-        !this.keepStandardView &&
-          this.variantViewModeService.viewMode === ViewMode.PERFORMANCE
-      );
+    const [svg, width_offset] = this.handleInfix(this.infixType, height, width);
 
-      const [svg, width_offset] = this.handleInfix(
-        this.infixType,
-        height,
-        width
-      );
+    svg_container
+      .attr('width', width + width_offset)
+      .attr('height', height + 2 * VARIANT_Constants.SELECTION_STROKE_WIDTH);
 
-      svg_container
-        .attr('width', width + width_offset)
-        .attr('height', height + 2 * VARIANT_Constants.SELECTION_STROKE_WIDTH);
+    this.draw(this.variant.alignment, svg, true);
 
-      // if (
-      //   !this.keepStandardView &&
-      //   this.variantViewModeService.viewMode === ViewMode.CONFORMANCE &&
-      //   this.variant.alignment
-      // )
-      //   this.draw(this.variant.alignment, svg, true);
-      this.draw(this.variant.variant, svg, true);
-
-      if (
-        this.variant.variant instanceof SequenceGroup &&
-        (this.keepStandardView ||
-          this.variantViewModeService.viewMode !== ViewMode.PERFORMANCE)
-      ) {
-        this.svgSelection.select('polygon').style('fill', 'transparent');
-      }
-
-      this.selection.emit(this.svgSelection);
+    if (this.variant.alignment instanceof SequenceGroup) {
+      this.svgSelection.select('polygon').style('fill', 'transparent');
     }
+
+    this.selection.emit(this.svgSelection);
   }
 
   private handleInfix(infixType, height: number, width: number): [any, number] {
@@ -960,6 +931,55 @@ export class VariantDrawerDirective
     if (this.onMouseOverCbFc) {
       this.onMouseOverCbFc(this, element, this.variant, parent);
     }
+
+    parent.on('mouseover', (e: PointerEvent) => {
+      this.onMouseOverAlignment((e.currentTarget as any).__data__.alignmentEid);
+    });
+    parent.on('mouseout', (e: PointerEvent) => {
+      this.onMouseOutAlignment();
+    });
+  }
+
+  onMouseOverAlignment(eid: number) {
+    this.highlightSynchronousChevrons(
+      this.variantVisualisationComponent.variantDrawer.svgHtmlElement,
+      0.4,
+      eid
+    );
+    this.highlightSynchronousChevrons(this.svgHtmlElement, 0.4, eid);
+  }
+
+  onMouseOutAlignment() {
+    this.highlightSynchronousChevrons(
+      this.variantVisualisationComponent.variantDrawer.svgHtmlElement,
+      1
+    );
+    this.highlightSynchronousChevrons(this.svgHtmlElement, 1);
+  }
+
+  highlightSynchronousChevrons(
+    elementRef: ElementRef<any>,
+    transparency: number,
+    eid?: number
+  ) {
+    let elements = d3
+      .select(elementRef.nativeElement)
+      .selectAll('g.variant-element-group');
+    // blur out all the chevrons
+    elements.style('fill-opacity', transparency)
+      .select('polygon')
+      .style('stroke', 'none');
+
+    if (transparency !== 1) {
+      elements
+        .filter(function (d: any) {
+          return d.alignmentEid == eid;
+        })
+        .style('fill-opacity', 1)
+        .select('polygon')
+        .style('stroke-width', '1')
+        .style('stroke', 'red');
+    }
   }
 
   onVariantClick(element: VariantElement) {
@@ -1130,20 +1150,6 @@ export class VariantDrawerDirective
     return textLength;
   }
 
-  /*
-  public resetCachedTextLength() {
-    this.sharedDataService.computedTextLengthCache = new Map<string, number>();
-    console.log('reset');
-  }*/
-
-  getSVGGraphicElement(): SVGGraphicsElement {
-    return this.svgHtmlElement.nativeElement;
-  }
-
-  isExpanded(): boolean {
-    return this.variant.variant.expanded;
-  }
-
   setInspectVariant() {
     d3.select('.selected-polygon').classed('selected-polygon', false);
     d3.selectAll('.variant-polygon').classed(
@@ -1160,9 +1166,4 @@ export class VariantDrawerDirective
     );
   }
 
-  changeSelected(group: VariantElement) {
-    d3.selectAll('.variant-element-group')
-      .selectAll('polygon')
-      .classed('selected-polygon', (d) => group === d);
-  }
 }

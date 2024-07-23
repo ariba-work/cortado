@@ -1,6 +1,5 @@
 """Import routes here
 """
-
 from fastapi import APIRouter
 
 from api.websocket import main as websocket

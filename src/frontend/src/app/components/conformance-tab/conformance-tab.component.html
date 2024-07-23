@@ -26,9 +26,24 @@
       Color Maps
     </button>
   </li>
+  <li class="nav-item" role="presentation">
+    <button
+      class="nav-link button"
+      id="violations-tab"
+      data-bs-toggle="tab"
+      data-bs-target="#violations"
+      type="button"
+      role="tab"
+      aria-controls="violations"
+      aria-selected="false"
+      #violationsTab
+    >
+      Violations
+    </button>
+  </li>
 </ul>
 
-<div class="tab-content">
+<div class="tab-content d-flex justify-content-center">
   <div
     class="tab-pane fade show active"
     id="model-selection"
@@ -204,7 +219,7 @@
             Variant Conformance
             <i
               class="bi bi-question-circle-fill"
-              ngbTooltip="The Variant Conformance describes how often an 
+              ngbTooltip="The Variant Conformance describes how often an
               activity is properly aligned with the process model. Concurrent
               activties are sequentialized to get aggregate values."
               triggers="hover"
@@ -229,5 +244,13 @@
         </div>
       </div>
     </div>
+  </div>
+  <div
+    class="tab-pane fade violations-tab"
+    id="violations"
+    role="tabpanel"
+    aria-labelledby="violations-tab"
+  >
+    <app-violations></app-violations>
   </div>
 </div>

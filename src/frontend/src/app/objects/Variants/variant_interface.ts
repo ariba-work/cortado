@@ -1,6 +1,7 @@
 import { ProcessTree } from '../ProcessTree/ProcessTree';
 import { InfixType } from './infix_selection';
 import { VariantElement } from './variant_element';
+import { Dependency } from './dependency';
 
 export interface IVariant {
   id: string;
@@ -25,6 +26,7 @@ export interface IVariant {
   fragmentStatistics: any;
   collapsedVariantId: string;
   clusterId: number;
+  dependencyDeviations: Dependency[];
 
   equals(variant: IVariant): boolean;
 }

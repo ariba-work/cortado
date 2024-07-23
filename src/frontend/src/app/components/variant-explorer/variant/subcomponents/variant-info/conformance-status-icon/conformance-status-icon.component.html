@@ -16,6 +16,10 @@
     *ngIf="variant.deviations === 0 && !variant.isConformanceOutdated"
   ></i>
   <i
+    class="bi bi-check-square font-large text-primary"
+    *ngIf="variant.deviations > 0 && variant.deviations == variant.dependencyDeviations?.length"
+  ></i>
+  <i
     class="bi bi-check-square font-large text-warning"
     *ngIf="variant.deviations === 0 && variant.isConformanceOutdated"
     ngbTooltip="(re)calculate conformance statistics"
@@ -26,7 +30,7 @@
   <!-- x-square icon-->
   <i
     class="bi bi-x-square font-large text-danger"
-    *ngIf="variant.deviations > 0 && !variant.isConformanceOutdated"
+    *ngIf="!variant.isConformanceOutdated && variant.deviations > variant.dependencyDeviations?.length"
   >
   </i>
   <i

@@ -3,6 +3,7 @@ import { ProcessTree } from '../ProcessTree/ProcessTree';
 import { InfixType } from './infix_selection';
 import { VariantElement, deserialize } from './variant_element';
 import { IVariant } from './variant_interface';
+import {Dependency} from "./dependency";
 
 export interface FragmentStatistics {
   totalOccurrences: number;
@@ -40,6 +41,7 @@ export class Variant implements IVariant {
     return value;
   })
   alignment: VariantElement | undefined;
+  dependencyDeviations: Dependency[];
   deviations: number | undefined;
   isTimeouted: boolean;
   isConformanceOutdated: boolean;

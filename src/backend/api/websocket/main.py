@@ -14,7 +14,6 @@ from api.routes.variants.subvariantMining import (
 from backend_utilities.configuration.repository import ConfigurationRepositoryFactory
 from backend_utilities.multiprocessing.pool_factory import PoolFactory
 from cache import cache
-from endpoints.alignments import InfixType
 
 router = APIRouter(tags=["websocket"], prefix="/ws")
 
@@ -63,12 +62,12 @@ class ConformanceWebsocketHandler(WebSocketService):
         )
 
     async def handle_message(self, data, timeout: int):
+
         self.pool.apply_async(
             calculate_alignment_intern_with_timeout,
             (
-                data["pt"],
-                data["variant"],
-                InfixType(data["infixType"]),
+                data,
+                cache.variants,
                 timeout,
             ),
             callback=get_alignment_callback(

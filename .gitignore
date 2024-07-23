@@ -21,3 +21,5 @@ app-dist
 .sol
 
 event_log.p
+
+**/.DS_Store

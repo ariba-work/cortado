@@ -1,0 +1,87 @@
+<div *ngIf="selectedVariantForInsights && selectedVariantForInsights.alignment">
+
+  <app-variant-visualisation
+    [variant]="selectedVariantForInsights"
+    [colorMap]="colorMap"
+    [arcsCache]="{}"
+    [showAlignmentDrawer]="true"
+    class="m-3"
+  ></app-variant-visualisation>
+
+  <div class="d-flex flex-row justify-content-center">
+
+    <div class="card d-flex flex-col" *ngIf="undesiredDeps.length>0">
+      <div class="d-flex flex-row">
+        <h5 class="card-title text-white m-3">Undesired Dependencies</h5>
+        <i
+          class="bi bi-info-circle-fill secondary-text d-flex align-items-center"
+          ngbTooltip="Dependencies present in the variant but not in the model"
+          triggers="hover"
+          container="body"
+        ></i>
+      </div>
+      <div class="card-body">
+        <div *ngFor="let dep of undesiredDeps" class="d-flex flex-col mb-3">
+          <div class="d-flex flex-row">
+            <svg
+              #ActivityButton
+              appVariantDrawer
+              [variant]="{ variant: activityDummyVariants.get(dep.source) }"
+              [computeActivityColor]="computeActivityColor"
+              [highlightOnMouseover]="false"
+              class="activity-button"
+            ></svg>
+            <svg
+              #ActivityButton
+              appVariantDrawer
+              [variant]="{ variant: activityDummyVariants.get(dep.target) }"
+              [computeActivityColor]="computeActivityColor"
+              [highlightOnMouseover]="false"
+              class="activity-button"
+            ></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex flex-col card" *ngIf="undesiredDeps.length>0">
+      <div class="d-flex flex-row">
+        <h5 class="card-title text-white m-3">Missing Dependencies</h5>
+        <i
+          class="bi bi-info-circle-fill secondary-text d-flex align-items-center"
+          ngbTooltip="Dependencies present in the model but not in the model"
+          triggers="hover"
+          container="body"
+        ></i>
+      </div>
+
+      <div class="card-body">
+        <div *ngFor="let dep of missingDeps" class="d-flex flex-col mb-3">
+          <div class="d-flex flex-row">
+            <svg
+              #ActivityButton
+              appVariantDrawer
+              [variant]="{ variant: activityDummyVariants.get(dep.source) }"
+              [computeActivityColor]="computeActivityColor"
+              [highlightOnMouseover]="false"
+              class="activity-button"
+            ></svg>
+            <svg
+              #ActivityButton
+              appVariantDrawer
+              [variant]="{ variant: activityDummyVariants.get(dep.target) }"
+              [computeActivityColor]="computeActivityColor"
+              [highlightOnMouseover]="false"
+              class="activity-button"
+            ></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+
+
