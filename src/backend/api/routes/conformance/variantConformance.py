@@ -14,7 +14,6 @@ from cortado_core.utils.process_tree import LabelWithIndex
 from starlette.websockets import WebSocketState
 
 from backend_utilities.configuration.repository import ConfigurationRepositoryFactory
-from backend_utilities.encoder import PythonObjectEncoder
 from backend_utilities.timeout.helper_functions import (
     TimeoutException,
     execute_with_timeout,
