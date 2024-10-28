@@ -7,7 +7,7 @@
 
 **Cortado is a process mining tool dedicated for interactive/incremental process discovery**
 
-This is a fork of the main repository implementing **UNFOLDING-BASED ALIGNMENTS** - a work within a Master's thesis on - '_Partial Order-based Alignments via Petri net Unfolding_'
+This is a fork of the main repository implementing **UNFOLDING-BASED ALIGNMENTS** - a work within the Master's thesis on - '_Computation of Partial Order-based Alignments via Petri net Unfolding_'
 
 It replaces the sequentialization-based conformance checking in Cortado with unfolding-based alignments along with additional features. 
 
