@@ -27,6 +27,6 @@ All the relevant changes for unfolding-based alignments can be found in https://
 
 ## Setup
 
-see https://github.com/cortado-tool/cortado
+see [https://github.com/cortado-tool/cortado](https://github.com/cortado-tool/cortado?tab=readme-ov-file#setup)
 
 
