@@ -29,4 +29,6 @@ All the relevant changes for unfolding-based alignments can be found in https://
 
 see [https://github.com/cortado-tool/cortado](https://github.com/cortado-tool/cortado?tab=readme-ov-file#setup)
 
+** Make sure you do not have pre-installed versions of `cortado_core` and/or `pm4py` in your Python env prior to running `pip install -r requirements.txt`. If yes, delete them and run again.
+
 
